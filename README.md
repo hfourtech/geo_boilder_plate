@@ -253,10 +253,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Have questions or suggestions? 
 
-- **LinkedIn:** [Your Profile](#)
-- **Twitter:** [@yourhandle](#)
-- **Email:** your.email@example.com
-- **Website:** [yourwebsite.com](#)
+- **LinkedIn:** [H4Tech](https://github.com/hfourtech/geo_boilder_plate)
+- **Twitter:** [@h4techs](https://x.com/h4techs)
+- **Email:** codebuddy@h4tech.com
+- **Website:** [h4tech.com](https://h4tech.com/)
 
 ---
 
