@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A comprehensive guide to understanding and implementing JWT authentication in modern web applications">
+    <meta name="author" content="Your Name">
+    <title>Understanding JWT Authentication: A Complete Guide</title>
+    
+    <!-- Schema.org markup for TechArticle -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Understanding JWT Authentication: A Complete Guide",
+      "description": "A comprehensive guide to understanding and implementing JWT authentication in modern web applications",
+      "author": {
+        "@type": "Person",
+        "name": "Your Name",
+        "jobTitle": "Senior Software Engineer",
+        "url": "https://yourwebsite.com"
+      },
+      "datePublished": "2025-10-31T09:00:00Z",
+      "dateModified": "2025-10-31T09:00:00Z",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Your Blog",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://yourwebsite.com/logo.png"
+        }
+      },
+      "image": "https://yourwebsite.com/images/jwt-guide.png",
+      "articleBody": "JSON Web Tokens (JWT) are a compact, URL-safe means of representing claims between two parties...",
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "RFC 7519: JSON Web Token (JWT)",
+          "url": "https://tools.ietf.org/html/rfc7519"
+        }
+      ],
+      "keywords": ["JWT", "authentication", "security", "web development", "tokens"]
+    }
+    </script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+        
+        ul, ol {
+            padding-left: 25px;
+        }
+        
+        strong {
+            color: #2c3e50;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Article element with semantic markup -->
+    <article itemscope itemtype="https://schema.org/TechArticle">
+        <header>
+            <h1 itemprop="headline">Understanding JWT Authentication: A Complete Guide</h1>
+            
+            <div class="meta">
+                <time itemprop="datePublished" datetime="2025-10-31">October 31, 2025</time>
+                <span> • </span>
+                <address itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    By <a rel="author" href="https://yourwebsite.com" itemprop="url">
+                        <span itemprop="name">Your Name</span>
+                    </a>
+                </address>
+                <span> • </span>
+                <span>10 min read</span>
+            </div>
+        </header>
+
+        <!-- Introduction Section -->
+        <section>
+            <p itemprop="description">
+                <strong>JSON Web Tokens (JWT)</strong> are a compact, URL-safe means of representing 
+                claims between two parties. In modern web development, JWTs have become the standard 
+                for handling authentication and information exchange between clients and servers.
+            </p>
+            
+            <p>
+                This guide will walk you through everything you need to know about JWT authentication, 
+                from basic concepts to production-ready implementation.
+            </p>
+        </section>
+
+        <!-- Main Content Section -->
+        <section>
+            <h2>What is JWT?</h2>
+            
+            <p>
+                A JWT consists of three parts separated by dots (<code>.</code>):
+            </p>
+            
+            <ol>
+                <li><strong>Header:</strong> Contains the token type and signing algorithm</li>
+                <li><strong>Payload:</strong> Contains the claims (user data)</li>
+                <li><strong>Signature:</strong> Ensures the token hasn't been tampered with</li>
+            </ol>
+            
+            <p>
+                A typical JWT looks like this:
+            </p>
+            
+            <pre><code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</code></pre>
+        </section>
+
+        <section>
+            <h2>Key Benefits of JWT</h2>
+            
+            <ul>
+                <li>
+                    <strong>Stateless:</strong> No server-side session storage required. The server 
+                    doesn't need to keep track of which tokens are active.
+                </li>
+                <li>
+                    <strong>Portable:</strong> Can be used across different domains and services, 
+                    making it perfect for microservices architectures.
+                </li>
+                <li>
+                    <strong>Self-contained:</strong> All necessary information is encoded in the token, 
+                    reducing database lookups.
+                </li>
+                <li>
+                    <strong>Scalable:</strong> Since tokens are validated without database queries, 
+                    your authentication layer scales horizontally.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>How JWT Authentication Works</h2>
+            
+            <ol>
+                <li>User logs in with credentials (username/password)</li>
+                <li>Server validates credentials and generates a JWT</li>
+                <li>Server sends the JWT back to the client</li>
+                <li>Client stores the JWT (usually in localStorage or httpOnly cookie)</li>
+                <li>Client includes the JWT in the Authorization header for subsequent requests</li>
+                <li>Server validates the JWT signature and extracts user information</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Implementation Example: Node.js with Express</h2>
+            
+            <h3>Installation</h3>
+            
+            <pre><code>npm install jsonwebtoken express bcrypt</code></pre>
+            
+            <h3>Creating a JWT</h3>
+            
+            <pre><code>const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+/**
+ * Generates a JWT token for a user
+ * @param {Object} user - User object containing id and email
+ * @param {string} secret - Secret key for signing the token
+ * @returns {string} JWT token
+ */
+function generateToken(user, secret) {
+  const payload = {
+    userId: user.id,
+    email: user.email,
+    role: user.role
+  };
+  
+  const options = {
+    expiresIn: '24h', // Token expires in 24 hours
+    issuer: 'your-app-name'
+  };
+  
+  return jwt.sign(payload, secret, options);
+}
+
+// Example usage
+const user = { id: 123, email: 'user@example.com', role: 'admin' };
+const token = generateToken(user, process.env.JWT_SECRET);
+console.log(token);</code></pre>
+
+            <h3>Login Route</h3>
+            
+            <pre><code>app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    // Find user in database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ 
+        error: 'Invalid credentials' 
+      });
+    }
+    
+    // Verify password
+    const isValidPassword = await bcrypt.compare(
+      password, 
+      user.password
+    );
+    
+    if (!isValidPassword) {
+      return res.status(401).json({ 
+        error: 'Invalid credentials' 
+      });
+    }
+    
+    // Generate JWT
+    const token = generateToken(user, process.env.JWT_SECRET);
+    
+    // Send response
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name
+      }
+    });
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error' 
+    });
+  }
+});</code></pre>
+
+            <h3>Middleware for Protected Routes</h3>
+            
+            <pre><code>/**
+ * Middleware to verify JWT token
+ * Extracts token from Authorization header and validates it
+ */
+function authenticateToken(req, res, next) {
+  // Get token from Authorization header
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  if (!token) {
+    return res.status(401).json({ 
+      error: 'Access token required' 
+    });
+  }
+  
+  // Verify token
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ 
+        error: 'Invalid or expired token' 
+      });
+    }
+    
+    // Attach user info to request
+    req.user = decoded;
+    next();
+  });
+}
+
+// Usage in protected routes
+app.get('/api/profile', authenticateToken, async (req, res) => {
+  try {
+    // req.user contains the decoded JWT payload
+    const user = await User.findById(req.user.userId);
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});</code></pre>
+        </section>
+
+        <section>
+            <h2>Security Best Practices</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Practice</th>
+                        <th>Why It Matters</th>
+                        <th>Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Use HTTPS</strong></td>
+                        <td>Prevents token interception</td>
+                        <td>Always use SSL/TLS in production</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Short expiration times</strong></td>
+                        <td>Limits damage if token is compromised</td>
+                        <td>15 minutes for access tokens, longer for refresh tokens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Strong secret keys</strong></td>
+                        <td>Makes signature harder to forge</td>
+                        <td>Use at least 256-bit random strings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Don't store sensitive data</strong></td>
+                        <td>JWTs are not encrypted, only signed</td>
+                        <td>Store only non-sensitive identifiers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Implement token refresh</strong></td>
+                        <td>Better UX without compromising security</td>
+                        <td>Use refresh tokens with longer expiration</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Common Pitfalls to Avoid</h2>
+            
+            <h3>1. Storing Sensitive Information in JWT</h3>
+            <p>
+                <strong>Problem:</strong> JWTs are encoded (Base64), not encrypted. Anyone can decode 
+                and read the payload.
+            </p>
+            <p>
+                <strong>Solution:</strong> Only store non-sensitive identifiers like user ID. Fetch 
+                sensitive data from the database when needed.
+            </p>
+            
+            <h3>2. Not Validating Token Expiration</h3>
+            <p>
+                <strong>Problem:</strong> Accepting expired tokens defeats the purpose of time-limited access.
+            </p>
+            <p>
+                <strong>Solution:</strong> Always check the <code>exp</code> claim. Most JWT libraries 
+                do this automatically.
+            </p>
+            
+            <h3>3. Using Weak Secret Keys</h3>
+            <p>
+                <strong>Problem:</strong> Short or predictable secrets can be brute-forced.
+            </p>
+            <p>
+                <strong>Solution:</strong> Use cryptographically secure random strings of at least 
+                256 bits.
+            </p>
+            
+            <pre><code>// Generate a secure secret key (run once, store in env variables)
+const crypto = require('crypto');
+const secret = crypto.randomBytes(64).toString('hex');
+console.log(secret);</code></pre>
+        </section>
+
+        <section>
+            <h2>JWT vs Session-Based Authentication</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>JWT</th>
+                        <th>Sessions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Storage</td>
+                        <td>Client-side (localStorage/cookie)</td>
+                        <td>Server-side (memory/database)</td>
+                    </tr>
+                    <tr>
+                        <td>Scalability</td>
+                        <td>Excellent (stateless)</td>
+                        <td>Requires shared session store</td>
+                    </tr>
+                    <tr>
+                        <td>Revocation</td>
+                        <td>Difficult (need blacklist)</td>
+                        <td>Easy (delete session)</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile Apps</td>
+                        <td>Ideal</td>
+                        <td>Less suitable</td>
+                    </tr>
+                    <tr>
+                        <td>Size</td>
+                        <td>Larger (sent with each request)</td>
+                        <td>Small session ID</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- FAQ Section with Schema Markup -->
+        <section itemscope itemtype="https://schema.org/FAQPage">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">Where should I store JWT tokens on the client side?</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>
+                            For web applications, use <strong>httpOnly cookies</strong> to prevent XSS 
+                            attacks. For mobile apps or SPAs where you need JavaScript access, use 
+                            <code>localStorage</code> but be aware of XSS vulnerabilities. Consider 
+                            implementing Content Security Policy (CSP) headers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">How do I handle token refresh?</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>
+                            Use two tokens: a short-lived access token (15 minutes) and a longer-lived 
+                            refresh token (7 days). When the access token expires, use the refresh token 
+                            to get a new access token. Store refresh tokens securely (httpOnly cookie or 
+                            secure storage).
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 itemprop="name">Can I revoke a JWT token?</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        <p>
+                            JWTs are stateless by design, so direct revocation is not built-in. Solutions 
+                            include: maintaining a token blacklist in Redis, using short expiration times, 
+                            or checking a "token version" number stored in your database on each request.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            
+            <p>
+                JWT authentication provides a scalable, stateless approach to handling user authentication 
+                in modern applications. While it comes with security considerations, following best 
+                practices makes it a robust solution for most use cases.
+            </p>
+            
+            <p>
+                Key takeaways:
+            </p>
+            
+            <ul>
+                <li>Always use HTTPS in production</li>
+                <li>Keep token expiration times short</li>
+                <li>Never store sensitive information in JWT payloads</li>
+                <li>Implement proper token refresh mechanisms</li>
+                <li>Use strong, random secret keys</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>
+                <strong>Further Reading:</strong>
+            </p>
+            <ul>
+                <li><a href="https://tools.ietf.org/html/rfc7519">RFC 7519: JSON Web Token (JWT)</a></li>
+                <li><a href="https://jwt.io/">JWT.io - Token Debugger</a></li>
+                <li><a href="https://auth0.com/docs/secure/tokens/json-web-tokens">Auth0 JWT Documentation</a></li>
+            </ul>
+            
+            <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666;">
+                <em>Last updated: <time datetime="2025-10-31">October 31, 2025</time></em>
+            </p>
+        </footer>
+    </article>
+</body>
+</html>

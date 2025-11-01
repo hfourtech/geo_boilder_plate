@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Hooks FAQ - Common Questions Answered</title>
+    <meta name="description" content="Comprehensive FAQ about React Hooks with detailed answers to common questions about useState, useEffect, custom hooks, and best practices.">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .faq-item {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .answer {
+            color: #555;
+        }
+        
+        code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        pre code {
+            background: none;
+            color: #f8f8f2;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>React Hooks FAQ</h1>
+    <p>Common questions and answers about React Hooks, updated for React 18+</p>
+    
+    <!-- FAQPage Schema Markup -->
+    <div itemscope itemtype="https://schema.org/FAQPage">
+        
+        <!-- Question 1 -->
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h2 class="question" itemprop="name">What's the difference between useState and useRef?</h2>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="answer" itemprop="text">
+                    <p>
+                        <code>useState</code> is used for values that should trigger re-renders when changed, 
+                        while <code>useRef</code> is for values that persist across renders without causing 
+                        re-renders when updated.
+                    </p>
+                    
+                    <p><strong>Use useState when:</strong></p>
+                    <ul>
+                        <li>The value affects what's displayed on screen</li>
+                        <li>You want the component to re-render when the value changes</li>
+                        <li>You're managing form inputs, toggles, or UI state</li>
+                    </ul>
+                    
+                    <p><strong>Use useRef when:</strong></p>
+                    <ul>
+                        <li>You need to store a value that doesn't affect rendering</li>
+                        <li>You're accessing DOM elements directly</li>
+                        <li>You're storing timers, intervals, or previous values</li>
+                    </ul>
+                    
+                    <pre><code>// useState triggers re-render
+const [count, setCount] = useState(0);
+setCount(1); // Component re-renders
+
+// useRef does NOT trigger re-render
+const countRef = useRef(0);
+countRef.current = 1; // No re-render</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h2 class="question" itemprop="name">When should I use useEffect vs useLayoutEffect?</h2>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="answer" itemprop="text">
+                    <p>
+                        <code>useEffect</code> runs asynchronously after the browser has painted, while 
+                        <code>useLayoutEffect</code> runs synchronously before the browser paints. 
+                    </p>
+                    
+                    <p><strong>Use useEffect (99% of cases) for:</strong></p>
+                    <ul>
+                        <li>Data fetching</li>
+                        <li>Setting up subscriptions</li>
+                        <li>Logging or analytics</li>
+                        <li>Any side effect that doesn't affect layout</li>
+                    </ul>
+                    
+                    <p><strong>Use useLayoutEffect only for:</strong></p>
+                    <ul>
+                        <li>Measuring DOM elements before paint</li>
+                        <li>Preventing visual flickering when updating DOM</li>
+                        <li>Synchronous DOM mutations that must happen before paint</li>
+                    </ul>
+                    
+                    <pre><code>// useEffect - async, after paint
+useEffect(() => {
+  fetchData(); // Doesn't block painting
+}, []);
+
+// useLayoutEffect - sync, before paint
+useLayoutEffect(() => {
+  const height = ref.current.offsetHeight;
+  setDimensions(height); // Prevents flicker
+}, []);</code></pre>
+                    
+                    <p class="highlight">
+                        <strong>Performance tip:</strong> useLayoutEffect blocks the browser from painting, 
+                        potentially causing performance issues. Always prefer useEffect unless you have a 
+                        specific visual reason to use useLayoutEffect.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h2 class="question" itemprop="name">How do I prevent infinite loops in useEffect?</h2>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="answer" itemprop="text">
+                    <p>
+                        Infinite loops in useEffect happen when the dependency array includes values that 
+                        change on every render. Here are the common causes and solutions:
+                    </p>
+                    
+                    <p><strong>Problem 1: Object/Array dependencies</strong></p>
+                    <pre><code>// ❌ BAD - Creates new object every render
+useEffect(() => {
+  fetchData(params);
+}, [params]); // params is { id: 1 } recreated each time
+
+// ✅ GOOD - Destructure specific values
+useEffect(() => {
+  fetchData({ id: params.id });
+}, [params.id]); // Only re-run when id changes</code></pre>
+                    
+                    <p><strong>Problem 2: State updates in effect</strong></p>
+                    <pre><code>// ❌ BAD - Updates state that's in dependencies
+useEffect(() => {
+  setCount(count + 1); // Triggers re-render, runs effect again
+}, [count]);
+
+// ✅ GOOD - Use functional update
+useEffect(() => {
+  setCount(prev => prev + 1); // No dependency needed
+}, []); // Runs once</code></pre>
+                    
+                    <p><strong>Problem 3: Function dependencies</strong></p>
+                    <pre><code>// ❌ BAD - Function recreated every render
+function handleData() { /* ... */ }
+useEffect(() => {
+  handleData();
+}, [handleData]); // New function each render
+
+// ✅ GOOD - Use useCallback
+const handleData = useCallback(() => {
+  /* ... */
+}, [/* dependencies */]);
+
+useEffect(() => {
+  handleData();
+}, [handleData]); // Only changes when dependencies change</code></pre>
+                    
+                    <p><strong>Quick debugging tip:</strong></p>
+                    <pre><code>useEffect(() => {
+  console.log('Effect ran');
+  // Your effect code
+}, [dep1, dep2]); // Log when effect runs to identify the culprit</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 4 -->
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h2 class="question" itemprop="name">What are the rules of hooks and why do they matter?</h2>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="answer" itemprop="text">
+                    <p>
+                        React Hooks must follow two critical rules to maintain state consistency:
+                    </p>
+                    
+                    <p><strong>Rule 1: Only call hooks at the top level</strong></p>
+                    <p>
+                        Never call hooks inside loops, conditions, or nested functions. React relies on 
+                        the order of hook calls to maintain state between renders.
+                    </p>
+                    
+                    <pre><code>// ❌ BAD - Conditional hook call
+if (condition) {
+  const [state, setState] = useState(0); // Will break!
+}
+
+// ❌ BAD - Hook in loop
+for (let i = 0; i < 5; i++) {
+  useEffect(() => {}); // Will break!
+}
+
+// ✅ GOOD - Hook at top level, condition inside
+const [state, setState] = useState(0);
+if (condition) {
+  // Use state here
+}
+
+// ✅ GOOD - Condition inside useEffect
+useEffect(() => {
+  if (condition) {
+    // Do something
+  }
+}, [condition]);</code></pre>
+                    
+                    <p><strong>Rule 2: Only call hooks from React functions</strong></p>
+                    <p>
+                        Call hooks from React function components or custom hooks only, not from regular 
+                        JavaScript functions.
+                    </p>
+                    
+                    <pre><code>// ❌ BAD - Hook in regular function
+function regularFunction() {
+  const [state, setState] = useState(0); // Will break!
+}
+
+// ✅ GOOD - Hook in component
+function MyComponent() {
+  const [state, setState] = useState(0); // Correct!
+}
+
+// ✅ GOOD - Hook in custom hook
+function useCustomHook() {
+  const [state, setState] = useState(0); // Correct!
+  return state;
+}</code></pre>
+                    
+                    <p class="highlight">
+                        <strong>Why these rules exist:</strong> React maintains an internal list of hooks 
+                        for each component. The order must stay the same between renders so React can 
+                        correctly match up state and effects. Breaking these rules causes state to get 
+                        mixed up between different hooks.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 5 -->
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h2 class="question" itemprop="name">How do I create a custom hook?</h2>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="answer" itemprop="text">
+                    <p>
+                        Custom hooks let you extract component logic into reusable functions. They're 
+                        just JavaScript functions whose name starts with "use" and that may call other hooks.
+                    </p>
+                    
+                    <p><strong>Basic pattern:</strong></p>
+                    <pre><code>/**
+ * Custom hook for managing form input state
+ * @param {string} initialValue - Initial value for the input
+ * @returns {Object} Object with value, onChange handler, and reset function
+ */
+function useInput(initialValue = '') {
+  const [value, setValue] = useState(initialValue);
+  
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+  
+  const reset = () => {
+    setValue(initialValue);
+  };
+  
+  return {
+    value,
+    onChange: handleChange,
+    reset
+  };
+}
+
+// Usage in component
+function LoginForm() {
+  const email = useInput('');
+  const password = useInput('');
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(email.value, password.value);
+    email.reset();
+    password.reset();
+  };
+  
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type="email" {...email} /&gt;
+      &lt;input type="password" {...password} /&gt;
+      &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+                    
+                    <p><strong>Advanced example with data fetching:</strong></p>
+                    <pre><code>/**
+ * Custom hook for data fetching with loading and error states
+ */
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    let cancelled = false;
+    
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (!cancelled) {
+          setData(result);
+          setError(null);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message);
+          setData(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    fetchData();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
+  
+  return { data, loading, error };
+}
+
+// Usage
+function UserProfile({ userId }) {
+  const { data: user, loading, error } = useFetch(
+    `https://api.example.com/users/${userId}`
+  );
+  
+  if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (error) return &lt;div&gt;Error: {error}&lt;/div&gt;;
+  if (!user) return null;
+  
+  return &lt;div&gt;{user.name}&lt;/div&gt;;
+}</code></pre>
+                    
+                    <p><strong>Best practices for custom hooks:</strong></p>
+                    <ul>
+                        <li>Always prefix the name with "use" (e.g., <code>useForm</code>, <code>useAuth</code>)</li>
+                        <li>Return values that make sense together (object or array)</li>
+                        <li>Document parameters and return values</li>
+                        <li>Follow the same rules as built-in hooks</li>
+                        <li>Make them reusable across multiple components</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 6 -->
+        <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h2 class="question" itemprop="name">When should I use useMemo and useCallback?</h2>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="answer" itemprop="text">
+                    <p>
+                        <code>useMemo</code> and <code>useCallback</code> are optimization hooks. 
+                        Don't use them by default—only add them when you have a measured performance problem.
+                    </p>
+                    
+                    <p><strong>useMemo - Memoizes values</strong></p>
+                    <pre><code>// Use for expensive calculations
+const expensiveValue = useMemo(() => {
+  return computeExpensiveValue(a, b);
+}, [a, b]); // Only recalculate when a or b changes
+
+// ❌ DON'T use for simple operations
+const sum = useMemo(() => a + b, [a, b]); // Unnecessary!
+
+// ✅ DO use for expensive operations
+const filtered = useMemo(() => {
+  return hugeArray.filter(item => item.value > threshold);
+}, [hugeArray, threshold]);</code></pre>
+                    
+                    <p><strong>useCallback - Memoizes functions</strong></p>
+                    <pre><code>// Use when passing callbacks to optimized child components
+const handleClick = useCallback(() => {
+  doSomething(value);
+}, [value]);
+
+return &lt;OptimizedChild onClick={handleClick} /&gt;;
+
+// ❌ DON'T use everywhere
+const handleClick = useCallback(() => {
+  console.log('clicked');
+}, []); // Usually unnecessary!
+
+// ✅ DO use with React.memo or in dependencies
+const MemoizedChild = React.memo(Child);
+
+function Parent() {
+  const handleClick = useCallback(() => {
+    // Without useCallback, MemoizedChild would re-render unnecessarily
+  }, []);
+  
+  return &lt;MemoizedChild onClick={handleClick} /&gt;;
+}</code></pre>
+                    
+                    <p><strong>When to actually use them:</strong></p>
+                    <ul>
+                        <li><strong>useMemo:</strong> Large data transformations, complex calculations, referential equality for objects/arrays passed as dependencies</li>
+                        <li><strong>useCallback:</strong> Functions passed to memoized child components, functions used in other hooks' dependencies</li>
+                    </ul>
+                    
+                    <p class="highlight">
+                        <strong>Performance note:</strong> These hooks have their own cost. Only use them 
+                        when you've identified a real performance issue through profiling. Premature 
+                        optimization can make code harder to read without providing benefits.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 2px solid #ddd; color: #666;">
+        <p>Last updated: October 31, 2025</p>
+        <p>Have more questions? <a href="mailto:contact@example.com">Get in touch</a></p>
+    </footer>
+</body>
+</html>

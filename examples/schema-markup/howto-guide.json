@@ -1,0 +1,304 @@
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to Deploy a Node.js Application to AWS EC2",
+  "description": "Complete step-by-step guide for deploying a Node.js application to Amazon EC2 with NGINX reverse proxy, SSL certificate, and PM2 process management.",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://yourwebsite.com/images/aws-deployment-guide.png",
+    "height": 406,
+    "width": 305
+  },
+  "totalTime": "PT45M",
+  "estimatedCost": {
+    "@type": "MonetaryAmount",
+    "currency": "USD",
+    "value": "0"
+  },
+  "supply": [
+    {
+      "@type": "HowToSupply",
+      "name": "AWS Account with EC2 access"
+    },
+    {
+      "@type": "HowToSupply",
+      "name": "Domain name (optional, for custom domain)"
+    },
+    {
+      "@type": "HowToSupply",
+      "name": "Node.js application repository"
+    },
+    {
+      "@type": "HowToSupply",
+      "name": "SSH client (Terminal, PuTTY, etc.)"
+    }
+  ],
+  "tool": [
+    {
+      "@type": "HowToTool",
+      "name": "AWS EC2 Console"
+    },
+    {
+      "@type": "HowToTool",
+      "name": "Terminal/Command Line"
+    },
+    {
+      "@type": "HowToTool",
+      "name": "Text Editor (nano, vim)"
+    }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Launch an EC2 Instance",
+      "text": "Go to AWS Console, navigate to EC2 service, and launch a new instance with Ubuntu 22.04 LTS. Choose t2.micro for free tier eligibility. Configure security group to allow SSH (port 22), HTTP (port 80), and HTTPS (port 443).",
+      "image": "https://yourwebsite.com/images/step1-launch-instance.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step1"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Connect to Your Instance via SSH",
+      "text": "Download your private key (.pem file) and connect to your instance using SSH. Update file permissions and connect with: ssh -i your-key.pem ubuntu@your-instance-ip",
+      "image": "https://yourwebsite.com/images/step2-ssh-connect.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step2",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Open terminal and navigate to the directory containing your .pem file"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Run: chmod 400 your-key.pem"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Connect: ssh -i your-key.pem ubuntu@your-instance-ip"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Update System and Install Dependencies",
+      "text": "Update package lists and install Node.js, npm, and Git on your Ubuntu instance.",
+      "image": "https://yourwebsite.com/images/step3-install-deps.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step3",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Update packages: sudo apt update && sudo apt upgrade -y"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Install Node.js: curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Verify installation: node --version && npm --version"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Install Git: sudo apt install git -y"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Clone and Configure Your Application",
+      "text": "Clone your Node.js application from Git repository, install dependencies, and configure environment variables.",
+      "image": "https://yourwebsite.com/images/step4-clone-app.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step4",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Clone repository: git clone https://github.com/yourusername/your-app.git"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Navigate to directory: cd your-app"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Install dependencies: npm install --production"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Create .env file: nano .env"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Add environment variables (PORT, DATABASE_URL, etc.)"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Install and Configure PM2",
+      "text": "Install PM2 process manager to keep your Node.js application running continuously and restart automatically on crashes or server reboots.",
+      "image": "https://yourwebsite.com/images/step5-pm2.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step5",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Install PM2 globally: sudo npm install -g pm2"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Start your app: pm2 start app.js --name your-app-name"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Configure auto-restart on system boot: pm2 startup systemd"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Run the command PM2 provides, then: pm2 save"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Check status: pm2 status"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Install and Configure NGINX",
+      "text": "Set up NGINX as a reverse proxy to forward requests from port 80 to your Node.js application running on port 3000 (or your configured port).",
+      "image": "https://yourwebsite.com/images/step6-nginx.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step6",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Install NGINX: sudo apt install nginx -y"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Create server block: sudo nano /etc/nginx/sites-available/your-app"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Add configuration (see detailed config in article)"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Create symbolic link: sudo ln -s /etc/nginx/sites-available/your-app /etc/nginx/sites-enabled/"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Test configuration: sudo nginx -t"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Restart NGINX: sudo systemctl restart nginx"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Configure SSL with Let's Encrypt (Optional)",
+      "text": "Add free SSL certificate using Certbot and Let's Encrypt to enable HTTPS for your application.",
+      "image": "https://yourwebsite.com/images/step7-ssl.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step7",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Install Certbot: sudo apt install certbot python3-certbot-nginx -y"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Obtain certificate: sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Follow prompts to configure automatic HTTPS redirect"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Test auto-renewal: sudo certbot renew --dry-run"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Configure Firewall",
+      "text": "Set up UFW (Uncomplicated Firewall) to allow only necessary incoming traffic.",
+      "image": "https://yourwebsite.com/images/step8-firewall.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step8",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Allow SSH: sudo ufw allow OpenSSH"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Allow HTTP: sudo ufw allow 'Nginx Full'"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Enable firewall: sudo ufw enable"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Check status: sudo ufw status"
+        }
+      ]
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "name": "Verify Deployment",
+      "text": "Test your deployed application and verify all components are working correctly.",
+      "image": "https://yourwebsite.com/images/step9-verify.png",
+      "url": "https://yourwebsite.com/guides/deploy-nodejs#step9",
+      "itemListElement": [
+        {
+          "@type": "HowToDirection",
+          "text": "Visit your domain or IP address in a browser"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Check PM2 status: pm2 status"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Check NGINX status: sudo systemctl status nginx"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "View application logs: pm2 logs your-app-name"
+        },
+        {
+          "@type": "HowToDirection",
+          "text": "Test SSL certificate (if configured): https://www.ssllabs.com/ssltest/"
+        }
+      ]
+    }
+  ],
+  "video": {
+    "@type": "VideoObject",
+    "name": "Node.js AWS EC2 Deployment Walkthrough",
+    "description": "Video tutorial showing the complete deployment process",
+    "thumbnailUrl": "https://yourwebsite.com/images/video-thumbnail.jpg",
+    "uploadDate": "2025-10-31T10:00:00Z",
+    "duration": "PT15M",
+    "contentUrl": "https://yourwebsite.com/videos/aws-deployment.mp4"
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "Node.js Deployment"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Your Name",
+    "jobTitle": "DevOps Engineer"
+  },
+  "datePublished": "2025-10-31",
+  "inLanguage": "en-US"
+}
