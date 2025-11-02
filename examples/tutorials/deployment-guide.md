@@ -168,7 +168,7 @@ git --version
 cd ~
 
 # Clone your repository
-git clone https://github.com/yourusername/your-app.git
+git clone git@github.com:hfourtech/geo_boilder_plate.git
 
 # Navigate to app directory
 cd your-app
