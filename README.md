@@ -150,50 +150,6 @@ Template for publishing original research and benchmarks that AI models will cit
 # Check if your content is cited in responses
 ```
 
----
-
-## ✅ GEO Checklist
-
-Copy this checklist for your content:
-
-### Content Structure
-- [ ] Use semantic HTML5 tags
-- [ ] Implement proper heading hierarchy (H1 → H2 → H3)
-- [ ] Include publication and update dates
-- [ ] Add author credentials and expertise
-
-### Schema Markup
-- [ ] Add TechArticle schema for technical posts
-- [ ] Implement FAQPage schema for Q&A sections
-- [ ] Use HowTo schema for tutorials
-- [ ] Include citation fields in schema
-
-### Code Examples
-- [ ] Provide complete, runnable code
-- [ ] Add inline comments and documentation
-- [ ] Include usage examples
-- [ ] Show error handling
-
-### Documentation
-- [ ] Write clear, conversational explanations
-- [ ] Answer "who, what, when, where, why, how"
-- [ ] Include prerequisites and dependencies
-- [ ] Provide troubleshooting tips
-
-### Credibility
-- [ ] Cite authoritative sources
-- [ ] Include original research or data
-- [ ] Show methodology for benchmarks
-- [ ] Link to related official documentation
-
-### Maintenance
-- [ ] Review and update content quarterly
-- [ ] Fix broken links and deprecated code
-- [ ] Update version numbers and compatibility info
-- [ ] Track which AI tools cite your content
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! Here's how you can help:
