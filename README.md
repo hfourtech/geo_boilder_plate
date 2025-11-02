@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-**Related Article:** [From SEO to GEO: A Developer's Guide to Optimizing for AI Search](#) *(Add your LinkedIn article link here)*
+**Related Article:** [From SEO to GEO: A Developer's Guide to Optimizing for AI Search](https://www.linkedin.com/pulse/from-seo-geo-developers-guide-optimizing-ai-search-balakrishnan-7mayc)
 
 ---
 
